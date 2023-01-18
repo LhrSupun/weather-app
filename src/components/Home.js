@@ -18,7 +18,8 @@ const adjustForTimezone = (offset) => {
     //get the timezone offset from local time in minutes
     const tzDifference = timeZoneFromDB * 60 + targetTime.getTimezoneOffset();
     //convert the offset to milliseconds, add to targetTime, and make a new Date
-    return new Date(targetTime.getTime() + tzDifference * 60 * 1000);
+    const val = new Date(targetTime.getTime() + tzDifference * 60 * 1000);
+    return val.toDateString();
 }
 
 function Home() {
@@ -43,8 +44,9 @@ function Home() {
                     <City
                         name={city?.name}
                         code={city?.sys?.country}
+                        description={city.weather[0].description}
+                        color={city.weather[0].main}
                         day={() => adjustForTimezone(city?.sys?.timezone)}
-                        description={city?.weather?.description}
                     />
                 </div>
             )}
