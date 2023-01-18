@@ -5,21 +5,17 @@ import City from './City';
 const api_key = process.env.REACT_APP_API_KEY
 const ids = [524901, 703448, 2643743]; // city id array
 
-const now = new Date();
 
 // get data from api
 const fetchData = () => fetch(`http://api.openweathermap.org/data/2.5/group?id=${ids}&units=metric&appid=${api_key}`).then(res => res.json());
 
 
 const adjustForTimezone = (offset) => {
-    const date = now.toISOString();
-    const targetTime = new Date(date);
-    const timeZoneFromDB = offset; //time zone value from database
-    //get the timezone offset from local time in minutes
-    const tzDifference = timeZoneFromDB * 60 + targetTime.getTimezoneOffset();
-    //convert the offset to milliseconds, add to targetTime, and make a new Date
-    const val = new Date(targetTime.getTime() + tzDifference * 60 * 1000);
-    return val.toDateString();
+    const now = new Date();
+    now.setTime(now.getTime() + offset * 1000);
+    const date = now.toDateString();
+    const time = now.toLocaleTimeString();
+    return `${date} ${time}`;
 }
 
 function Home() {
@@ -46,7 +42,7 @@ function Home() {
                         code={city?.sys?.country}
                         description={city.weather[0].description}
                         color={city.weather[0].main}
-                        day={() => adjustForTimezone(city?.sys?.timezone)}
+                        dateTime={() => adjustForTimezone(city?.sys?.timezone)}
                     />
                 </div>
             )}
